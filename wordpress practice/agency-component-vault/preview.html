@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏛️ Agency Component Vault — Live UI Catalog</title>
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="styles/component-styles.css">
+    <style>
+        /* Floating Toolbar for Live Color & Font Customization */
+        .vault-demo-bar {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-family: system-ui, sans-serif;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .vault-demo-title {
+            font-weight: 800;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .theme-selector-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        /* Color Swatches & Native Color Picker */
+        .color-picker-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #1e293b;
+            padding: 0.25rem 0.6rem;
+            border-radius: 50px;
+            border: 1px solid #334155;
+        }
+        .native-color-picker {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .native-color-picker::-webkit-color-swatch {
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+        }
+        .native-color-picker::-moz-color-swatch {
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+        }
+        .color-swatch-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .color-swatch-circle:hover {
+            transform: scale(1.2);
+            border-color: #ffffff;
+        }
+
+        .btn-font-pill {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-font-pill:hover, .btn-font-pill.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* Cheatsheet Interactive Box */
+        .vault-cheatsheet-box {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: var(--radius-lg);
+            border: 1px solid #1e293b;
+            padding: 1.75rem 2rem;
+            margin: 2rem 0 3rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .vault-cheatsheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 1rem;
+        }
+        .vault-cheatsheet-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .vault-tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .vault-tab-btn {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 0.35rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .vault-tab-btn:hover, .vault-tab-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+        .vault-code-wrap {
+            position: relative;
+            background: #020617;
+            border-radius: 8px;
+            padding: 1.25rem;
+            border: 1px solid #1e293b;
+            overflow-x: auto;
+        }
+        .vault-code-pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: #38bdf8;
+            line-height: 1.6;
+            white-space: pre;
+        }
+        .vault-copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            border-radius: 4px;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: background 0.2s ease;
+        }
+        .vault-copy-btn:hover {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        /* Section divider labels */
+        .component-label {
+            background: #e2e8f0;
+            color: #334155;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border-radius: 6px;
+            margin: 3.5rem 0 1.5rem 0;
+        }
+        .showcase-container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem 1.5rem;
+        }
+    </style>
+</head>
+<body id="vault-body">
+
+    <!-- Floating Live Brand Color Picker & Font Selector -->
+    <div class="vault-demo-bar">
+        <div class="vault-demo-title">
+            <i class="bi bi-box-seam-fill" style="color: var(--primary);"></i>
+            <span>Agency Component Vault — Live UI Catalog</span>
+        </div>
+
+        <div class="theme-selector-group">
+            <span><i class="bi bi-palette-fill"></i> Primary Color:</span>
+            
+            <!-- Native HTML5 Color Picker -->
+            <div class="color-picker-wrap">
+                <input type="color" id="primaryPicker" value="#0284c7" class="native-color-picker" onchange="applyHexColor(this.value)" title="Choose Custom Hex Color">
+                <span id="colorHexLabel" style="font-family: monospace; font-size: 0.8rem;">#0284c7</span>
+            </div>
+
+            <!-- Quick Swatches (Clean Palette Circles) -->
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+                <div class="color-swatch-circle" style="background: #0284c7;" onclick="applyHexColor('#0284c7')" title="Ocean Blue"></div>
+                <div class="color-swatch-circle" style="background: #4f46e5;" onclick="applyHexColor('#4f46e5')" title="Indigo"></div>
+                <div class="color-swatch-circle" style="background: #059669;" onclick="applyHexColor('#059669')" title="Emerald"></div>
+                <div class="color-swatch-circle" style="background: #e11d48;" onclick="applyHexColor('#e11d48')" title="Crimson / Rose"></div>
+                <div class="color-swatch-circle" style="background: #d97706;" onclick="applyHexColor('#d97706')" title="Amber / Gold"></div>
+                <div class="color-swatch-circle" style="background: #7c3aed;" onclick="applyHexColor('#7c3aed')" title="Violet / Purple"></div>
+                <div class="color-swatch-circle" style="background: #0891b2;" onclick="applyHexColor('#0891b2')" title="Cyan Teal"></div>
+                <div class="color-swatch-circle" style="background: #0f172a;" onclick="applyHexColor('#0f172a')" title="Deep Slate"></div>
+            </div>
+
+            <span style="margin-left: 0.75rem; border-left: 1px solid #334155; padding-left: 0.75rem;"><i class="bi bi-fonts"></i> Fonts:</span>
+            <button class="btn-font-pill" onclick="setFontPairing('Plus Jakarta Sans', 'Plus Jakarta Sans', this)">Jakarta</button>
+            <button class="btn-font-pill" onclick="setFontPairing('Playfair Display', 'Plus Jakarta Sans', this)">Playfair</button>
+            <button class="btn-font-pill" onclick="setFontPairing('Outfit', 'Outfit', this)">Outfit</button>
+            <button class="btn-font-pill" onclick="setFontPairing('Inter', 'Inter', this)">Inter</button>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- INTERACTIVE 1-CLICK CHEATSHEET BOX IN UI -->
+    <!-- ========================================================================= -->
+    <div class="showcase-container" style="padding-bottom: 0;">
+        <div class="vault-cheatsheet-box">
+            <div class="vault-cheatsheet-header">
+                <div class="vault-cheatsheet-title">
+                    <i class="bi bi-file-earmark-code-fill" style="color: #38bdf8;"></i>
+                    <span>WordPress Theme Cheat Sheet (Ready-to-Copy Template Recipes)</span>
+                </div>
+                <div class="vault-tab-buttons">
+                    <button class="vault-tab-btn active" onclick="loadCheatSheet('front-page', this)">front-page.php</button>
+                    <button class="vault-tab-btn" onclick="loadCheatSheet('page-services', this)">page-services.php</button>
+                    <button class="vault-tab-btn" onclick="loadCheatSheet('single-service', this)">single-service.php</button>
+                    <button class="vault-tab-btn" onclick="loadCheatSheet('page-doctors', this)">page-doctors.php</button>
+                    <button class="vault-tab-btn" onclick="loadCheatSheet('single-doctor', this)">single-doctor.php</button>
+                    <button class="vault-tab-btn" onclick="loadCheatSheet('page-contact', this)">page-contact.php</button>
+                    <button class="vault-tab-btn" onclick="loadCheatSheet('404', this)">404.php</button>
+                    <button class="vault-tab-btn" onclick="loadCheatSheet('1-liners', this)">1-Liners</button>
+                </div>
+            </div>
+
+            <div class="vault-code-wrap">
+                <button class="vault-copy-btn" onclick="copyCheatSheetCode(this)"><i class="bi bi-clipboard"></i> Copy PHP Code</button>
+                <pre class="vault-code-pre" id="cheatsheetCodeDisplay">&lt;?php
+// front-page.php
+get_header();
+
+// 1. Navigation & Announcement Top Strip
+get_template_part( 'template-parts/navbar-emergency-strip' );
+
+// 2. Hero Section with Dual CTAs
+get_template_part( 'template-parts/hero-medical-clinic', null, array(
+    'badge'         => 'Board-Certified Specialists in 2026',
+    'title'         => 'Exceptional Care & Proven Results for Your Health',
+    'subtitle'      => 'Experience modern, patient-first care with verified clinical precision.',
+    'cta_primary'   => 'Book Appointment Today',
+    'cta_secondary' => 'Explore All Services',
+    'primary_url'   => '#appointment',
+    'secondary_url' => '#services',
+) );
+
+// 3. Social Proof Trust Badges (4 Columns)
+get_template_part( 'template-parts/trust-badges-4col' );
+
+// 4. Featured Services Grid (3 Columns)
+get_template_part( 'template-parts/card-service' );
+
+// 5. Specialist Doctors Team Directory
+get_template_part( 'template-parts/team-doctors-grid' );
+
+// 6. Patient 5-Star Reviews & Testimonials
+get_template_part( 'template-parts/testimonials-3col' );
+
+// 7. Urgent Hotline Call-To-Action Banner
+get_template_part( 'template-parts/cta-urgent-call', null, array(
+    'title'    => 'Need Immediate Assistance or Same-Day Slot?',
+    'subtitle' => 'Our clinic hotline is open 24/7. Walk-ins are always welcome.',
+    'phone'    => '(555) 019-2834',
+) );
+
+// 8. Business Footer
+get_template_part( 'template-parts/footer-multi-col' );
+
+get_footer();
+?&gt;</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 01. NAVBAR COMPONENTS -->
+    <!-- ========================================================================= -->
+    <div class="showcase-container">
+        <span class="component-label"><i class="bi bi-layout-text-window-reverse"></i> 01. Navbar Component (with Notice Strip)</span>
+    </div>
+
+    <div class="vault-top-notice">
+        <div class="vault-top-notice-inner">
+            <span><i class="bi bi-geo-alt-fill"></i> 123 Business Parkway, Suite 400 • Open Mon-Sat 8:00 AM - 6:00 PM</span>
+            <span><i class="bi bi-telephone-fill"></i> Direct Line: <strong>(555) 019-2834</strong></span>
+        </div>
+    </div>
+
+    <header class="vault-navbar-wrapper">
+        <div class="vault-navbar-container">
+            <div class="vault-logo">
+                <a href="#">Brand<span>Core</span></a>
+            </div>
+            <nav class="vault-nav-menu">
+                <ul>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Specialists</a></li>
+                    <li><a href="#">Reviews</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="vault-nav-cta">
+                <a href="#appointment" class="vault-btn-primary"><i class="bi bi-calendar-check-fill"></i> Book Appointment</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="showcase-container">
+
+        <!-- ========================================================================= -->
+        <!-- 02. HERO COMPONENTS -->
+        <!-- ========================================================================= -->
+        <span class="component-label"><i class="bi bi-megaphone-fill"></i> 02. Hero Component (Dual CTAs & Pill Tag)</span>
+
+        <section class="vault-hero-medical">
+            <div class="vault-pill-badge">
+                <i class="bi bi-patch-check-fill"></i> Board-Certified Professionals in 2026
+            </div>
+            <h1 class="vault-hero-heading">
+                Exceptional Solutions for Your Growing Business & Health
+            </h1>
+            <p class="vault-hero-subtext">
+                Experience modern, patient-first care and advanced technology designed to deliver verified, high-impact results.
+            </p>
+            <div class="vault-btn-group">
+                <a href="#appointment" class="vault-btn-primary">Get Started Today <i class="bi bi-arrow-right"></i></a>
+                <a href="#services" class="vault-btn-outline"><i class="bi bi-grid"></i> Explore Offerings</a>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 03. TRUST BADGES -->
+        <!-- ========================================================================= -->
+        <span class="component-label"><i class="bi bi-shield-fill-check"></i> 03. Trust Badges Component (Social Proof Grid)</span>
+
+        <section class="vault-trust-grid">
+            <div class="vault-trust-card">
+                <div class="vault-trust-icon"><i class="bi bi-person-badge-fill"></i></div>
+                <h3 class="vault-trust-title">Certified Specialists</h3>
+                <p class="vault-trust-desc">15+ years of verified clinical and industry excellence.</p>
+            </div>
+            <div class="vault-trust-card">
+                <div class="vault-trust-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+                <h3 class="vault-trust-title">Modern Technology</h3>
+                <p class="vault-trust-desc">Utilizing 3D digital scanners and precise equipment.</p>
+            </div>
+            <div class="vault-trust-card">
+                <div class="vault-trust-icon"><i class="bi bi-star-fill"></i></div>
+                <h3 class="vault-trust-title">4.9/5 Star Rating</h3>
+                <p class="vault-trust-desc">Trusted by over 8,500 satisfied clients & families.</p>
+            </div>
+            <div class="vault-trust-card">
+                <div class="vault-trust-icon"><i class="bi bi-shield-check"></i></div>
+                <h3 class="vault-trust-title">Guaranteed Quality</h3>
+                <p class="vault-trust-desc">Transparent terms, direct coverage, and full warranties.</p>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 04. SERVICE & TREATMENT CARDS -->
+        <!-- ========================================================================= -->
+        <span class="component-label"><i class="bi bi-grid-3x3-gap-fill"></i> 04. Cards Component (Services / Offerings Grid)</span>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+            
+            <article class="vault-service-card">
+                <div class="vault-card-body">
+                    <span class="vault-category-pill">Comprehensive</span>
+                    <h3 class="vault-card-title"><a href="#">Preventative Examination & Diagnostics</a></h3>
+                    <div class="vault-card-excerpt">
+                        <p>Complete oral and physical assessment using high-resolution digital imaging and ultrasonic scans.</p>
+                    </div>
+                    <div class="vault-card-footer">
+                        <span class="vault-status-indicator"><i class="bi bi-check-circle-fill"></i> Available Today</span>
+                        <a href="#" class="vault-link-action">Details <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="vault-service-card">
+                <div class="vault-card-body">
+                    <span class="vault-category-pill">Aesthetic Care</span>
+                    <h3 class="vault-card-title"><a href="#">Painless Laser Smile Whitening</a></h3>
+                    <div class="vault-card-excerpt">
+                        <p>Advanced non-invasive laser whitening brightening teeth up to 8 shades in a single 45-minute visit.</p>
+                    </div>
+                    <div class="vault-card-footer">
+                        <span class="vault-status-indicator"><i class="bi bi-check-circle-fill"></i> Available Today</span>
+                        <a href="#" class="vault-link-action">Details <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="vault-service-card">
+                <div class="vault-card-body">
+                    <span class="vault-category-pill">Corrective</span>
+                    <h3 class="vault-card-title"><a href="#">Custom Invisible Aligners</a></h3>
+                    <div class="vault-card-excerpt">
+                        <p>Straighten teeth comfortably without brackets or wires using digitally modeled aligners.</p>
+                    </div>
+                    <div class="vault-card-footer">
+                        <span class="vault-status-indicator"><i class="bi bi-check-circle-fill"></i> Available Today</span>
+                        <a href="#single-service-preview" class="vault-link-action">Details <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- 05. SINGLE SERVICE / TREATMENT DETAIL PAGE COMPONENT -->
+        <!-- ========================================================================= -->
+        <span class="component-label" id="single-service-preview"><i class="bi bi-file-earmark-medical-fill"></i> 05. Single Treatment Guide Layout (Comprehensive Clinical Service Detail)</span>
+
+        <article class="vault-treatment-guide" style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-light); margin-bottom: 4rem; overflow: hidden; box-shadow: var(--shadow-sm);">
+
+            <!-- 1. Treatment Hero -->
+            <section class="vault-treatment-hero">
+                <div class="vault-container">
+                    <div class="vault-hero-row">
+                        <div class="vault-hero-text-col">
+                            <div class="vault-hero-meta-badge">
+                                <span class="vault-pill-badge"><i class="bi bi-patch-check-fill"></i> Specialized Clinical Guide</span>
+                                <span class="vault-reading-time"><i class="bi bi-clock"></i> 5 Min Read</span>
+                            </div>
+                            <h1 class="vault-hero-title">
+                                Comprehensive Guide to Selective Laser Trabeculoplasty (SLT)
+                            </h1>
+                            <p class="vault-hero-lead">
+                                Discover how gentle, non-invasive laser therapy lowers intraocular pressure, reduces dependence on daily medications, and preserves long-term vision.
+                            </p>
+                        </div>
+                        <div class="vault-hero-media-col">
+                            <div class="vault-hero-img-wrap">
+                                <div class="vault-hero-placeholder">
+                                    <i class="bi bi-eye-fill"></i>
+                                    <span>High-Resolution Clinical Imaging & Laser Suite</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Floating Schedule Ribbon -->
+            <div class="vault-schedule-ribbon-wrap">
+                <div class="vault-container">
+                    <div class="vault-schedule-ribbon">
+                        <div class="vault-ribbon-heading">
+                            <h3>Schedule Today</h3>
+                            <p>Same-day and priority consultation slots available</p>
+                        </div>
+                        <div class="vault-ribbon-actions">
+                            <a href="tel:9737901300" class="vault-btn-outline-pill">
+                                <i class="bi bi-telephone-fill"></i> (973) 790-1300
+                            </a>
+                            <a href="#appointment" class="vault-btn-primary-pill">
+                                <i class="bi bi-calendar-check-fill"></i> Book Appointment <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Section: Overview & Significance -->
+            <section class="vault-guide-section">
+                <div class="vault-container">
+                    <div class="vault-section-title-wrap">
+                        <h2>Treatment Overview & Clinical Significance</h2>
+                        <p>SLT targets the eye’s natural drainage system to improve fluid outflow and safely lower pressure without damaging surrounding ocular tissue.</p>
+                    </div>
+
+                    <div class="vault-accordion-group">
+                        <details class="vault-accordion-item" open>
+                            <summary class="vault-accordion-header">
+                                <span><i class="bi bi-bullseye" style="color: var(--primary); margin-right: 0.5rem;"></i> Targeted Laser Approach</span>
+                                <i class="bi bi-chevron-down vault-chevron"></i>
+                            </summary>
+                            <div class="vault-accordion-body">
+                                <p>The 532 nm Q-switched Nd:YAG laser delivers microscopic light pulses specifically absorbed by melanin-rich pigmented cells in the trabecular meshwork, stimulating natural biological drainage without thermal damage.</p>
+                            </div>
+                        </details>
+
+                        <details class="vault-accordion-item">
+                            <summary class="vault-accordion-header">
+                                <span><i class="bi bi-shield-check" style="color: var(--primary); margin-right: 0.5rem;"></i> Non-Invasive & Pain-Free Nature</span>
+                                <i class="bi bi-chevron-down vault-chevron"></i>
+                            </summary>
+                            <div class="vault-accordion-body">
+                                <p>Unlike conventional surgical procedures, SLT requires zero surgical incisions. Topical numbing drops ensure complete comfort throughout the 5-minute session.</p>
+                            </div>
+                        </details>
+
+                        <details class="vault-accordion-item">
+                            <summary class="vault-accordion-header">
+                                <span><i class="bi bi-arrow-repeat" style="color: var(--primary); margin-right: 0.5rem;"></i> Repeatability & Long-Term Safety</span>
+                                <i class="bi bi-chevron-down vault-chevron"></i>
+                            </summary>
+                            <div class="vault-accordion-body">
+                                <p>Because cellular architecture is preserved rather than scarred, the procedure can be safely repeated in subsequent years if intraocular pressure rises again.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Zig-Zag: Eligibility & Contraindications -->
+            <section class="vault-guide-section vault-section-alt">
+                <div class="vault-container">
+                    <div class="vault-zigzag-row vault-reverse">
+                        <div class="vault-zigzag-media">
+                            <div class="vault-card-media-box">
+                                <i class="bi bi-people-fill vault-media-icon"></i>
+                                <span>Patient Eligibility & Criteria</span>
+                            </div>
+                        </div>
+                        <div class="vault-zigzag-content">
+                            <h2>Patient Eligibility & Contraindications</h2>
+                            <p>Understanding whether SLT is the ideal first-line or complementary therapy ensures optimal outcomes and lasting vision preservation.</p>
+
+                            <details class="vault-accordion-item" open>
+                                <summary class="vault-accordion-header">
+                                    <span><i class="bi bi-check-circle-fill" style="color: var(--secondary); margin-right: 0.5rem;"></i> Candidates for SLT</span>
+                                    <i class="bi bi-chevron-down vault-chevron"></i>
+                                </summary>
+                                <div class="vault-accordion-body">
+                                    <ul class="vault-checklist">
+                                        <li><i class="bi bi-check2"></i> Primary open-angle glaucoma or ocular hypertension</li>
+                                        <li><i class="bi bi-check2"></i> Patients experiencing side effects or intolerance to eye drops</li>
+                                        <li><i class="bi bi-check2"></i> Difficulty maintaining daily drop routines due to memory or dexterity</li>
+                                        <li><i class="bi bi-check2"></i> Need for added pressure reduction following prior cataract surgery</li>
+                                    </ul>
+                                </div>
+                            </details>
+
+                            <details class="vault-accordion-item" style="margin-top: 0.75rem;">
+                                <summary class="vault-accordion-header">
+                                    <span><i class="bi bi-exclamation-triangle-fill" style="color: var(--accent); margin-right: 0.5rem;"></i> Contraindications</span>
+                                    <i class="bi bi-chevron-down vault-chevron"></i>
+                                </summary>
+                                <div class="vault-accordion-body">
+                                    <p>SLT is generally not recommended for active uveitic/inflammatory glaucoma, congenital conditions, or closed-angle glaucoma where the drainage angle cannot be visualized.</p>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Zig-Zag: Procedure Details (Step-by-Step) -->
+            <section class="vault-guide-section">
+                <div class="vault-container">
+                    <div class="vault-zigzag-row">
+                        <div class="vault-zigzag-media">
+                            <div class="vault-card-media-box">
+                                <i class="bi bi-hospital-fill vault-media-icon"></i>
+                                <span>10–15 Minute In-Office Visit</span>
+                            </div>
+                        </div>
+                        <div class="vault-zigzag-content">
+                            <h2>SLT Procedure Details: What to Expect</h2>
+                            <p>The entire visit is performed comfortably in-office, requiring less than 15 minutes of total chair time.</p>
+
+                            <div class="vault-step-cards">
+                                <div class="vault-step-card-mini">
+                                    <div class="vault-step-badge">1</div>
+                                    <div>
+                                        <h4>Gentle Preparation</h4>
+                                        <p>Specialized pressure-lowering and anesthetic eye drops are placed in the eye to ensure complete comfort.</p>
+                                    </div>
+                                </div>
+
+                                <div class="vault-step-card-mini">
+                                    <div class="vault-step-badge">2</div>
+                                    <div>
+                                        <h4>Laser Application</h4>
+                                        <p>A specialized contact lens focuses short, gentle pulses across the drainage channel in under 5 minutes.</p>
+                                    </div>
+                                </div>
+
+                                <div class="vault-step-card-mini">
+                                    <div class="vault-step-badge">3</div>
+                                    <div>
+                                        <h4>Immediate Post-Care</h4>
+                                        <p>A brief post-check confirms stable pressure, and you are cleared to return home or work right away.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Split Highlight Banner -->
+            <section class="vault-highlight-split">
+                <div class="vault-container-fluid">
+                    <div class="vault-split-row">
+                        <div class="vault-split-visual">
+                            <div class="vault-split-img-placeholder">
+                                <i class="bi bi-heart-pulse-fill"></i>
+                                <span>Comprehensive Glaucoma Management</span>
+                            </div>
+                        </div>
+                        <div class="vault-split-content-col">
+                            <div class="vault-split-card">
+                                <span class="vault-pill-badge"><i class="bi bi-award-fill"></i> Long-Term Vision Stability</span>
+                                <h2>Incorporating SLT into a Care Plan</h2>
+                                <p>SLT is most effective when integrated into a proactive, lifelong vision monitoring strategy tailored to your health.</p>
+                                
+                                <div class="vault-split-points">
+                                    <div class="vault-split-point">
+                                        <i class="bi bi-capsule"></i>
+                                        <div>
+                                            <strong>Reduces Medication Burden</strong>
+                                            <span>Helps patients minimize or eliminate daily prescription drops.</span>
+                                        </div>
+                                    </div>
+                                    <div class="vault-split-point">
+                                        <i class="bi bi-graph-down-arrow"></i>
+                                        <div>
+                                            <strong>Prevents Dangerous Spikes</strong>
+                                            <span>Provides continuous, 24/7 intraocular pressure stability.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a href="#appointment" class="vault-btn-primary" style="margin-top: 1.5rem; display: inline-flex;">
+                                    <i class="bi bi-calendar2-week-fill"></i> Consult Our Specialists
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Frequently Asked Questions (FAQ) -->
+            <section class="vault-guide-section">
+                <div class="vault-container">
+                    <div class="vault-zigzag-row vault-reverse">
+                        <div class="vault-zigzag-media">
+                            <div class="vault-card-media-box">
+                                <i class="bi bi-question-circle-fill vault-media-icon"></i>
+                                <span>Frequently Asked Questions</span>
+                            </div>
+                        </div>
+                        <div class="vault-zigzag-content">
+                            <h2>Frequently Asked Questions</h2>
+                            <p>Here are clear, authoritative answers to our patients’ most common inquiries regarding laser treatment.</p>
+
+                            <div class="vault-accordion-group">
+                                <details class="vault-accordion-item" open>
+                                    <summary class="vault-accordion-header">
+                                        <span>Can SLT be used as a first-line treatment?</span>
+                                        <i class="bi bi-chevron-down vault-chevron"></i>
+                                    </summary>
+                                    <div class="vault-accordion-body">
+                                        <p>Yes. Major clinical trials (such as the LiGHT Study) confirmed that SLT provides equal or superior pressure control compared to initial drop therapy, saving patients years of medication costs.</p>
+                                    </div>
+                                </details>
+
+                                <details class="vault-accordion-item">
+                                    <summary class="vault-accordion-header">
+                                        <span>Is SLT laser treatment painful?</span>
+                                        <i class="bi bi-chevron-down vault-chevron"></i>
+                                    </summary>
+                                    <div class="vault-accordion-body">
+                                        <p>No. Topical anesthetic eye drops completely numb the surface of the eye. Patients typically feel only slight pressure from the examination lens.</p>
+                                    </div>
+                                </details>
+
+                                <details class="vault-accordion-item">
+                                    <summary class="vault-accordion-header">
+                                        <span>Is the procedure covered by health insurance?</span>
+                                        <i class="bi bi-chevron-down vault-chevron"></i>
+                                    </summary>
+                                    <div class="vault-accordion-body">
+                                        <p>Yes. SLT is a medically necessary clinical procedure approved and covered by Medicare, Medicaid, and virtually all major commercial insurance plans.</p>
+                                    </div>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. Multi-Location Practice Footprint -->
+            <section class="vault-guide-section vault-section-alt">
+                <div class="vault-container">
+                    <div class="vault-section-title-wrap">
+                        <span class="vault-section-tag">Convenient Care Centers</span>
+                        <h2>Visit One of Our Modern Eye Care Locations</h2>
+                        <p>Compassionate specialists and advanced diagnostic suites located across the region.</p>
+                    </div>
+
+                    <div class="vault-locations-grid">
+                        <div class="vault-location-card">
+                            <h4>Wayne Clinic & Laser Suite</h4>
+                            <p class="vault-loc-address"><i class="bi bi-geo-alt-fill"></i> 123 Hamburg Turnpike, Suite 201<br>Wayne, NJ 07470</p>
+                            <p class="vault-loc-phone"><i class="bi bi-telephone-fill"></i> (973) 790-1300</p>
+                            <a href="tel:9737901300" class="vault-loc-link">Call Wayne Desk &rarr;</a>
+                        </div>
+
+                        <div class="vault-location-card">
+                            <h4>Randolph Medical Center</h4>
+                            <p class="vault-loc-address"><i class="bi bi-geo-alt-fill"></i> 450 Route 10 East, Building B<br>Randolph, NJ 07869</p>
+                            <p class="vault-loc-phone"><i class="bi bi-telephone-fill"></i> (973) 790-1300</p>
+                            <a href="tel:9737901300" class="vault-loc-link">Call Randolph Desk &rarr;</a>
+                        </div>
+
+                        <div class="vault-location-card">
+                            <h4>Paramus Surgical Pavilion</h4>
+                            <p class="vault-loc-address"><i class="bi bi-geo-alt-fill"></i> 80 E. Route 4, Suite 110<br>Paramus, NJ 07652</p>
+                            <p class="vault-loc-phone"><i class="bi bi-telephone-fill"></i> (201) 488-8200</p>
+                            <a href="tel:2014888200" class="vault-loc-link">Call Paramus Desk &rarr;</a>
+                        </div>
+
+                        <div class="vault-location-card">
+                            <h4>Clifton Vision Center</h4>
+                            <p class="vault-loc-address"><i class="bi bi-geo-alt-fill"></i> 1033 Clifton Ave, Suite 104<br>Clifton, NJ 07013</p>
+                            <p class="vault-loc-phone"><i class="bi bi-telephone-fill"></i> (973) 472-8844</p>
+                            <a href="tel:9734728844" class="vault-loc-link">Call Clifton Desk &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </article>
+
+        <!-- ========================================================================= -->
+        <!-- 06. TEAM & SPECIALISTS SECTION -->
+        <!-- ========================================================================= -->
+        <span class="component-label"><i class="bi bi-people-fill"></i> 06. Team Component (Specialists Directory)</span>
+
+        <section class="vault-team-section">
+            <div class="vault-section-header">
+                <span class="vault-section-tag">Clinical Excellence</span>
+                <h2 class="vault-section-title">Meet Our Specialist Practitioners</h2>
+                <p class="vault-section-sub">Our board-certified professionals bring over 40+ combined years of clinical expertise.</p>
+            </div>
+
+            <div class="vault-team-grid">
+                <div class="vault-team-card">
+                    <div class="vault-avatar-circle"><i class="bi bi-person-fill"></i></div>
+                    <span class="vault-role-badge">Chief Medical Officer</span>
+                    <h3 class="vault-member-name">Dr. Marcus Vance, MD</h3>
+                    <p class="vault-member-bio">Specializing in preventative care, complex diagnostics, and patient-first clinical treatments.</p>
+                    <div class="vault-member-footer">
+                        <span class="vault-rating"><i class="bi bi-star-fill"></i> 4.9 (340+ Reviews)</span>
+                        <a href="#appointment" class="vault-link-action">Book <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="vault-team-card">
+                    <div class="vault-avatar-circle"><i class="bi bi-person-fill-check"></i></div>
+                    <span class="vault-role-badge">Lead Surgeon</span>
+                    <h3 class="vault-member-name">Dr. Elena Rostova, DDS</h3>
+                    <p class="vault-member-bio">Expert in aesthetic restoration, laser surgery, and advanced digital smile rehabilitation.</p>
+                    <div class="vault-member-footer">
+                        <span class="vault-rating"><i class="bi bi-star-fill"></i> 5.0 (290+ Reviews)</span>
+                        <a href="#appointment" class="vault-link-action">Book <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="vault-team-card">
+                    <div class="vault-avatar-circle"><i class="bi bi-heart-pulse-fill"></i></div>
+                    <span class="vault-role-badge">Family Specialist</span>
+                    <h3 class="vault-member-name">Dr. Julian Hayes, OD</h3>
+                    <p class="vault-member-bio">Dedicated to comprehensive family examinations, preventative medicine, and pediatric care.</p>
+                    <div class="vault-member-footer">
+                        <span class="vault-rating"><i class="bi bi-star-fill"></i> 4.9 (420+ Reviews)</span>
+                        <a href="#appointment" class="vault-link-action">Book <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 07. SINGLE DOCTOR PROFILE PAGE COMPONENT -->
+        <!-- ========================================================================= -->
+        <span class="component-label"><i class="bi bi-person-vcard-fill"></i> 07. Single Specialist Profile Layout</span>
+
+        <section class="vault-doctor-profile-section">
+            <div class="vault-doctor-profile-card">
+                <div class="vault-doc-sidebar">
+                    <div class="vault-doc-photo-wrap">
+                        <i class="bi bi-person-circle vault-doc-big-avatar"></i>
+                    </div>
+                    <div class="vault-doc-status-pill"><i class="bi bi-circle-fill" style="font-size: 0.6rem;"></i> Accepting New Patients</div>
+                    <div class="vault-doc-booking-box">
+                        <h4>Schedule Consultation</h4>
+                        <p>Same-day and priority weekend appointments available.</p>
+                        <a href="#book" class="vault-btn-primary vault-btn-block"><i class="bi bi-calendar-plus-fill"></i> Book Time Slot</a>
+                    </div>
+                </div>
+
+                <div class="vault-doc-main-content">
+                    <span class="vault-role-badge">Lead Surgeon & Specialist</span>
+                    <h1 class="vault-doc-heading">Dr. Marcus Vance, DDS, FAGD</h1>
+                    <p class="vault-doc-rating-line">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <strong>4.9 / 5.0</strong> &bull; 340+ Verified Patient Reviews
+                    </p>
+
+                    <div class="vault-doc-bio-block">
+                        <h3>About Dr. Vance</h3>
+                        <p>Dr. Marcus Vance is a board-certified clinical specialist with over 16 years of clinical experience specializing in non-invasive restorative treatments, diagnostics, and full smile rehabilitation.</p>
+                    </div>
+
+                    <div class="vault-doc-highlights-grid">
+                        <div class="vault-highlight-item">
+                            <strong><i class="bi bi-mortarboard-fill"></i> Education & Credentials</strong>
+                            <span>Doctorate with Honors, Columbia University</span>
+                        </div>
+                        <div class="vault-highlight-item">
+                            <strong><i class="bi bi-award-fill"></i> Board Certifications</strong>
+                            <span>Fellow of the Academy of General Practice (FAGD)</span>
+                        </div>
+                        <div class="vault-highlight-item">
+                            <strong><i class="bi bi-translate"></i> Languages Spoken</strong>
+                            <span>English, Spanish, Tagalog</span>
+                        </div>
+                        <div class="vault-highlight-item">
+                            <strong><i class="bi bi-shield-plus"></i> Clinical Focus</strong>
+                            <span>Cosmetic Restoration, Laser Care, Diagnostics</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 08. CONTACT & LOCATION PAGE COMPONENT -->
+        <!-- ========================================================================= -->
+        <span class="component-label"><i class="bi bi-envelope-paper-fill"></i> 08. Contact & Location Layout (with Message Form)</span>
+
+        <section class="vault-contact-section">
+            <div class="vault-contact-grid">
+                <div class="vault-contact-info-col">
+                    <div class="vault-info-box">
+                        <div class="vault-info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                        <div>
+                            <h4>Facility Location</h4>
+                            <p>123 Business Parkway, Suite 400<br>Medical & Corporate Center, Tower B</p>
+                        </div>
+                    </div>
+                    <div class="vault-info-box">
+                        <div class="vault-info-icon"><i class="bi bi-telephone-inbound-fill"></i></div>
+                        <div>
+                            <h4>Direct Phone & Line</h4>
+                            <p>Main Desk: <strong>(555) 019-2834</strong><br>Emergency Hotline: <strong>(555) 019-9999</strong></p>
+                        </div>
+                    </div>
+                    <div class="vault-info-box">
+                        <div class="vault-info-icon"><i class="bi bi-clock-history"></i></div>
+                        <div>
+                            <h4>Operating Hours</h4>
+                            <p>Mon – Fri: 8:00 AM – 6:00 PM<br>Saturday: 9:00 AM – 2:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vault-contact-form-col">
+                    <h3>Request an Appointment</h3>
+                    <p>Fill out the form below and we will confirm your consultation slot within 15 minutes.</p>
+                    <form class="vault-form-block" onsubmit="event.preventDefault(); alert('Appointment requested successfully!');">
+                        <div class="vault-form-row">
+                            <div class="vault-form-group">
+                                <label>Full Name *</label>
+                                <input type="text" placeholder="e.g. John Doe" class="vault-form-control" required />
+                            </div>
+                            <div class="vault-form-group">
+                                <label>Phone *</label>
+                                <input type="tel" placeholder="e.g. (555) 123-4567" class="vault-form-control" required />
+                            </div>
+                        </div>
+                        <div class="vault-form-group">
+                            <label>Preferred Department</label>
+                            <select class="vault-form-control">
+                                <option>General Consultation & Checkup</option>
+                                <option>Specialist Treatment</option>
+                                <option>Cosmetic Assessment</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="vault-btn-primary vault-btn-block"><i class="bi bi-send-fill"></i> Submit Request</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 09. 404 ERROR PAGE COMPONENT -->
+        <!-- ========================================================================= -->
+        <span class="component-label"><i class="bi bi-exclamation-octagon-fill"></i> 09. 404 Error Page Layout (Lost Visitor Recovery)</span>
+
+        <section class="vault-404-container">
+            <div class="vault-404-card">
+                <div class="vault-404-badge">
+                    <span class="vault-404-number">404</span>
+                    <div class="vault-404-icon-bubble">
+                        <i class="bi bi-compass-fill"></i>
+                    </div>
+                </div>
+
+                <h1 class="vault-404-title">Oops! Page Not Found</h1>
+                <p class="vault-404-desc">
+                    The page or resource you are looking for might have been moved, renamed, or is temporarily unavailable. Let’s get you back on track!
+                </p>
+
+                <!-- Search Input Group -->
+                <div class="vault-404-search-box">
+                    <form class="vault-404-search-form" onsubmit="event.preventDefault(); alert('Searching for: ' + this.querySelector('input').value);">
+                        <div class="vault-404-input-group">
+                            <i class="bi bi-search vault-404-search-icon"></i>
+                            <input type="search" class="vault-404-search-field" placeholder="Search treatments, doctors, or articles..." />
+                            <button type="submit" class="vault-btn-primary">Search</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Popular Recovery Links -->
+                <div class="vault-404-quick-links">
+                    <h3 class="vault-404-quick-heading">Popular Destinations</h3>
+                    <div class="vault-404-grid">
+                        <a href="#services" class="vault-404-link-card">
+                            <div class="vault-404-card-icon"><i class="bi bi-grid-fill"></i></div>
+                            <div class="vault-404-card-text">
+                                <strong>Our Services</strong>
+                                <span>Explore clinical treatments & pricing</span>
+                            </div>
+                            <i class="bi bi-chevron-right vault-404-arrow"></i>
+                        </a>
+
+                        <a href="#appointment" class="vault-404-link-card">
+                            <div class="vault-404-card-icon"><i class="bi bi-calendar-check-fill"></i></div>
+                            <div class="vault-404-card-text">
+                                <strong>Book Appointment</strong>
+                                <span>Reserve your consultation slot</span>
+                            </div>
+                            <i class="bi bi-chevron-right vault-404-arrow"></i>
+                        </a>
+
+                        <a href="#doctors" class="vault-404-link-card">
+                            <div class="vault-404-card-icon"><i class="bi bi-people-fill"></i></div>
+                            <div class="vault-404-card-text">
+                                <strong>Our Specialists</strong>
+                                <span>Meet our certified practitioners</span>
+                            </div>
+                            <i class="bi bi-chevron-right vault-404-arrow"></i>
+                        </a>
+
+                        <a href="#contact" class="vault-404-link-card">
+                            <div class="vault-404-card-icon"><i class="bi bi-envelope-fill"></i></div>
+                            <div class="vault-404-card-text">
+                                <strong>Contact Desk</strong>
+                                <span>Direct hotline & directions</span>
+                            </div>
+                            <i class="bi bi-chevron-right vault-404-arrow"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Direct Actions -->
+                <div class="vault-404-actions">
+                    <a href="#hero" class="vault-btn-primary">
+                        <i class="bi bi-house-door-fill"></i> Return to Homepage
+                    </a>
+                    <a href="tel:5550192834" class="vault-btn-outline">
+                        <i class="bi bi-telephone-fill"></i> Need Help? Call (555) 019-2834
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 10. TESTIMONIALS SECTION -->
+        <!-- ========================================================================= -->
+        <span class="component-label"><i class="bi bi-chat-quote-fill"></i> 10. Testimonials Component (5-Star Reviews)</span>
+
+        <section class="vault-testimonials-section">
+            <div class="vault-testimonials-grid">
+                <div class="vault-testimonial-card">
+                    <div class="vault-stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="vault-quote">"The entire team was incredibly gentle and welcoming. The treatment was completely painless, and my results exceeded expectations!"</p>
+                    <div class="vault-client-info">
+                        <strong>Jessica Taylor</strong>
+                        <span>Verified Client &bull; 2 weeks ago</span>
+                    </div>
+                </div>
+                <div class="vault-testimonial-card">
+                    <div class="vault-stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="vault-quote">"Booking online was effortless. I was in the consultation room within 5 minutes of arriving. Best professional experience in the city."</p>
+                    <div class="vault-client-info">
+                        <strong>David Miller</strong>
+                        <span>Verified Patient &bull; 1 month ago</span>
+                    </div>
+                </div>
+                <div class="vault-testimonial-card">
+                    <div class="vault-stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="vault-quote">"Professional, transparent pricing with direct billing, and modern equipment. I highly recommend them to all my colleagues."</p>
+                    <div class="vault-client-info">
+                        <strong>Amanda Scott</strong>
+                        <span>Corporate Client &bull; 3 weeks ago</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 11. CTA BANNER COMPONENT -->
+        <!-- ========================================================================= -->
+        <span class="component-label"><i class="bi bi-telephone-outbound-fill"></i> 11. CTA Banner Component (Hotline & Booking)</span>
+
+        <section class="vault-cta-banner vault-cta-urgent">
+            <h2 class="vault-cta-heading">Need Immediate Professional Assistance?</h2>
+            <p class="vault-cta-text">Our emergency line is open 24/7. Walk-ins and new consultations are always welcome with zero waiting time.</p>
+            <a href="tel:5550192834" class="vault-btn-white">
+                <i class="bi bi-telephone-fill"></i> Call (555) 019-2834 Now
+            </a>
+        </section>
+
+    </div><!-- .showcase-container -->
+
+    <!-- ========================================================================= -->
+    <!-- 12. FOOTER COMPONENT -->
+    <!-- ========================================================================= -->
+    <footer class="vault-footer">
+        <div class="vault-footer-container">
+            <div class="vault-footer-grid">
+                <div class="vault-footer-col">
+                    <h4 class="vault-footer-heading">BrandCore Practice</h4>
+                    <p>Providing premium, compassionate, patient-centered care and modern digital solutions for individuals and businesses.</p>
+                </div>
+                <div class="vault-footer-col">
+                    <h4 class="vault-footer-heading">Operating Hours</h4>
+                    <p>Monday – Friday: 8:00 AM – 6:00 PM<br>Saturday: 9:00 AM – 2:00 PM<br>Sunday: Closed</p>
+                </div>
+                <div class="vault-footer-col">
+                    <h4 class="vault-footer-heading">Contact & Location</h4>
+                    <p>
+                        <i class="bi bi-geo-alt-fill"></i> 123 Business Parkway, Suite 400<br>
+                        <i class="bi bi-telephone-fill"></i> (555) 019-2834<br>
+                        <i class="bi bi-envelope-fill"></i> contact@brandcore.com
+                    </p>
+                </div>
+            </div>
+            <div class="vault-footer-bottom">
+                <p>&copy; 2026 BrandCore Practice. Built with WordPress Component Vault &bull; Bootstrap Icons.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Live Color & Font Customization Script -->
+    <script>
+        // Adjust Hex color dynamically
+        function applyHexColor(hex) {
+            document.documentElement.style.setProperty('--primary', hex);
+            
+            // Calculate a slightly darker shade for hover/primary-dark
+            const darkHex = adjustColorBrightness(hex, -25);
+            document.documentElement.style.setProperty('--primary-dark', darkHex);
+            
+            // Update input and label
+            document.getElementById('primaryPicker').value = hex;
+            document.getElementById('colorHexLabel').innerText = hex;
+        }
+
+        // Adjust brightness helper
+        function adjustColorBrightness(hex, percent) {
+            let num = parseInt(hex.replace('#', ''), 16),
+                amt = Math.round(2.55 * percent),
+                R = (num >> 16) + amt,
+                B = ((num >> 8) & 0x00FF) + amt,
+                G = (num & 0x0000FF) + amt;
+            return '#' + (0x1000000 + (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+                (B < 255 ? (B < 1 ? 0 : B) : 255) * 0x100 +
+                (G < 255 ? (G < 1 ? 0 : G) : 255))
+                .toString(16).slice(1);
+        }
+
+        // Font pairing switcher
+        function setFontPairing(headingFont, bodyFont, btn) {
+            document.documentElement.style.setProperty('--font-heading', "'" + headingFont + "', sans-serif");
+            document.documentElement.style.setProperty('--font-body', "'" + bodyFont + "', sans-serif");
+            
+            document.querySelectorAll('.btn-font-pill').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+
+        // Cheatsheet Recipe Switcher
+        const cheatSheetRecipes = {
+            'front-page': `<?php
+// front-page.php
+get_header();
+
+// 1. Navigation & Top Announcement Strip
+get_template_part( 'template-parts/navbar-emergency-strip' );
+
+// 2. Hero Section with Dual CTAs
+get_template_part( 'template-parts/hero-medical-clinic', null, array(
+    'badge'         => 'Board-Certified Specialists in 2026',
+    'title'         => 'Exceptional Care & Proven Results for Your Health',
+    'subtitle'      => 'Experience modern, patient-first care with verified clinical precision.',
+    'cta_primary'   => 'Book Appointment Today',
+    'cta_secondary' => 'Explore All Services',
+    'primary_url'   => '#appointment',
+    'secondary_url' => '#services',
+) );
+
+// 3. Social Proof Trust Badges (4 Columns)
+get_template_part( 'template-parts/trust-badges-4col' );
+
+// 4. Featured Services Grid (3 Columns)
+get_template_part( 'template-parts/card-service' );
+
+// 5. Specialist Doctors Team Directory
+get_template_part( 'template-parts/team-doctors-grid' );
+
+// 6. Patient 5-Star Reviews & Testimonials
+get_template_part( 'template-parts/testimonials-3col' );
+
+// 7. Urgent Hotline Call-To-Action Banner
+get_template_part( 'template-parts/cta-urgent-call', null, array(
+    'title'    => 'Need Immediate Assistance or Same-Day Slot?',
+    'subtitle' => 'Our clinic hotline is open 24/7. Walk-ins are always welcome.',
+    'phone'    => '(555) 019-2834',
+) );
+
+// 8. Business Footer
+get_template_part( 'template-parts/footer-multi-col' );
+
+get_footer();
+?>`,
+            'page-services': `<?php
+// page-services.php
+get_header();
+
+// 1. Hero Section
+get_template_part( 'template-parts/hero-medical-clinic', null, array(
+    'badge'         => 'Our Full Clinical Offerings',
+    'title'         => 'Comprehensive Treatments & Procedures',
+    'subtitle'      => 'Transparent pricing, 100% pain-free treatments, and direct insurance billing.',
+    'cta_primary'   => 'Request a Consultation',
+    'primary_url'   => '#appointment',
+) );
+
+// 2. Big Metrics Counter Strip
+get_template_part( 'template-parts/stats-counter-3col' );
+
+// 3. 3-Tier Pricing Packages
+get_template_part( 'template-parts/card-pricing-tier', null, array(
+    'featured' => true,
+    'badge'    => 'Most Popular',
+    'tier'     => 'Complete Care Package',
+    'price'    => '$299',
+    'period'   => '/ session',
+    'btn_text' => 'Choose This Plan',
+) );
+
+// 4. Testimonials
+get_template_part( 'template-parts/testimonials-3col' );
+
+// 5. Urgent Hotline Banner
+get_template_part( 'template-parts/cta-urgent-call' );
+
+get_footer();
+?>`,
+            'single-service': `<?php
+// single-service.php
+get_header();
+
+// 1. Single Service Clinical Guide (Hero + Floating Bar + Zig-Zag Accordions + Locations)
+// (Loads the complete layout from 09-page-templates/single-service.php)
+
+// 2. 5-Star Testimonials Grid
+get_template_part( 'template-parts/testimonials-3col', null, array(
+    'title' => 'Patient Results & Verified Experiences',
+) );
+
+// 3. Urgent Hotline CTA
+get_template_part( 'template-parts/cta-urgent-call', null, array(
+    'title' => 'Ready to Schedule This Treatment?',
+    'phone' => '(973) 790-1300',
+) );
+
+get_footer();
+?>`,
+            'page-doctors': `<?php
+// page-doctors.php
+get_header();
+
+// 1. Doctors Hero
+get_template_part( 'template-parts/hero-medical-clinic', null, array(
+    'badge'         => 'Board-Certified Practitioners in 2026',
+    'title'         => 'Meet Our Medical & Dental Specialists',
+    'subtitle'      => 'Our compassionate practitioners bring over 40+ years of combined clinical excellence.',
+    'cta_primary'   => 'Book Appointment with Specialist',
+    'primary_url'   => '#appointment',
+) );
+
+// 2. 4-Column Trust Badges
+get_template_part( 'template-parts/trust-badges-4col' );
+
+// 3. Full Doctors Grid
+get_template_part( 'template-parts/team-doctors-grid' );
+
+// 4. Urgent Hotline Banner
+get_template_part( 'template-parts/cta-urgent-call' );
+
+get_footer();
+?>`,
+            'single-doctor': `<?php
+// single-doctor.php
+get_header();
+
+// 1. Doctor Bio Layout (Photo + Credentials + Booking Box)
+// (Loads the complete layout from 09-page-templates/single-doctor.php)
+
+// 2. Patient Reviews for this Doctor
+get_template_part( 'template-parts/testimonials-3col', null, array(
+    'title' => 'Verified Patient Reviews for Dr. Vance',
+) );
+
+// 3. Direct Phone CTA Banner
+get_template_part( 'template-parts/cta-urgent-call', null, array(
+    'title' => 'Have Questions Before Booking?',
+    'phone' => '(555) 019-2834',
+) );
+
+get_footer();
+?>`,
+            'page-contact': `<?php
+// page-contact.php
+get_header();
+
+// 1. Contact Hero
+get_template_part( 'template-parts/hero-medical-clinic', null, array(
+    'badge'         => 'Convenient Central Practice',
+    'title'         => 'Get in Touch with Our Clinical Team',
+    'subtitle'      => 'We are here to help. Reach out by phone, email, or visit our modern clinic facility.',
+    'cta_primary'   => 'Call (555) 019-2834',
+    'primary_url'   => 'tel:5550192834',
+) );
+
+// 2. Contact Grid (Location Cards + Message Form)
+// (Loads the complete layout from 09-page-templates/page-contact.php)
+
+// 3. Urgent Hotline CTA
+get_template_part( 'template-parts/cta-urgent-call' );
+
+get_footer();
+?>`,
+            '404': `<?php
+// 404.php
+get_header();
+
+// 1. 404 Recovery Layout (Badge + Search Bar + 2x2 Popular Links + Return Button)
+// (Loads the complete layout from 09-page-templates/404.php)
+
+// 2. Support Hotline Banner
+get_template_part( 'template-parts/cta-urgent-call', null, array(
+    'title' => 'Looking for Immediate Assistance?',
+) );
+
+get_footer();
+?>`,
+            '1-liners': `// =============================================================================
+// CHEAT SHEET 8: ALL 1-LINER PARTIAL CALLS (QUICK REFERENCE)
+// =============================================================================
+// Quick copy-paste directory of all 14 reusable template parts in the vault.
+// Drop any single line directly into your PHP theme files wherever needed.
+
+// --- 01. NAVBARS ---
+// Clean header with brand logo, WordPress menu, and a CTA action button
+get_template_part( 'template-parts/navbar-standard' );
+
+// Header with top announcement notice strip (hours, location, hotline)
+get_template_part( 'template-parts/navbar-emergency-strip' );
+
+
+// --- 02. HEROES ---
+// High-converting clinic hero with pill badge, headline, and dual action buttons
+get_template_part( 'template-parts/hero-medical-clinic' );
+
+// Clean technical headline with engineering badge for dev blogs and portfolios
+get_template_part( 'template-parts/hero-tech-blog' );
+
+// Centered headline with email/phone lead capture consultation input box
+get_template_part( 'template-parts/hero-lead-capture' );
+
+
+// --- 03. TRUST PROOF & METRICS ---
+// 4-column social proof badges (Certified Specialists, Modern Tech, 4.9 Rating, Warranty)
+get_template_part( 'template-parts/trust-badges-4col' );
+
+// Dark navy strip with 3 large glowing numbers (15+ Years, 8.5k Patients, 99.4% Rating)
+get_template_part( 'template-parts/stats-counter-3col' );
+
+
+// --- 04. CARDS & GRIDS ---
+// Service/treatment card with thumbnail, category pill, excerpt, and "Details" link
+get_template_part( 'template-parts/card-service' );
+
+// Blog article card with author avatar, publish date, category tag, and read more
+get_template_part( 'template-parts/card-blog-post' );
+
+// 3-tier pricing package card with popular ribbon, price, and feature checklist
+get_template_part( 'template-parts/card-pricing-tier' );
+
+
+// --- 05. TEAMS & SPECIALISTS ---
+// 3-column doctor profiles with avatars, specialties, 5-star ratings, and booking links
+get_template_part( 'template-parts/team-doctors-grid' );
+
+// Modern agency team cards for Lead Architect, Design Director, and Growth Strategist
+get_template_part( 'template-parts/team-agency-cards' );
+
+
+// --- 06. CALL-TO-ACTION (CTA) BANNERS ---
+// High-urgency gradient phone banner with direct clickable tel: hotline button
+get_template_part( 'template-parts/cta-urgent-call' );
+
+// Dark luxury booking card inviting visitors to reserve consultation slots online
+get_template_part( 'template-parts/cta-appointment-booking' );
+
+
+// --- 07. TESTIMONIALS & REVIEWS ---
+// 3-column patient review cards with 5 gold stars, quotes, verified badges, and names
+get_template_part( 'template-parts/testimonials-3col' );
+
+
+// --- 08. FOOTERS ---
+// 3-column footer with brand mission, operating hours, contact info, and copyright
+get_template_part( 'template-parts/footer-multi-col' );`
+        };
+
+        function loadCheatSheet(type, btn) {
+            document.getElementById('cheatsheetCodeDisplay').innerText = cheatSheetRecipes[type] || '';
+            document.querySelectorAll('.vault-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+
+        function copyCheatSheetCode(btn) {
+            const code = document.getElementById('cheatsheetCodeDisplay').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check2"></i> Copied!';
+                btn.style.background = '#059669';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
